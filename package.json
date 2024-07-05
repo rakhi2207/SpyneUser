@@ -4,7 +4,7 @@
   "description": "syne assessment",
   "main": "index.ts",
   "scripts": {
-    "start": "npm run-script serve",
+    "start": "npm run serve",
     "serve": "node dist/index.js",
     "debug": "set NODE_ENV=development && npm run build && npm run start",
     "build": "tsc",
