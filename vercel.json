@@ -1,12 +1,16 @@
-{
-    "version": 2,
-    "builds": [
-      {
-        "src": "./src/index.js",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      { "src": "/(.*)", "dest": "/" }
-    ]
-  }
+vercel.json
+        {
+          "version": 2,
+            "builds": [
+              {
+                "src": "./index.ts",   // server.ts is in root
+                "use": "@vercel/node"
+              }
+            ],
+            "routes": [
+              {
+                "src": "/.*",
+                "dest": "index.ts"
+              }
+            ]
+          }
