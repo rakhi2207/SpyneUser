@@ -35,11 +35,10 @@ export class UserRepository extends Repository<User>
         try{
            const data = await this.save(entity);
            id = data.id;
+           return this.getTokenData({...userData, id});
         }catch(err){
-            this.handleError(err);
+            return this.handleError(err);
         }
-        
-        return this.getTokenData({...userData, id});
     }
 
     async validateLoginDetails(userData: userLogin){
@@ -50,32 +49,32 @@ export class UserRepository extends Repository<User>
                     email: userData.email
                 }
             });
+            if(!entity){
+                return {
+                    message: "Invalid email",
+                    status: StatusCodes.UNAUTHORIZED
+                }
+            }
+    
+            const isPasswordMatched = await bcrypt.compare(userData.password, entity.password);
+            if(!isPasswordMatched){
+                return {
+                    message: "Invalid password",
+                    status: StatusCodes.UNAUTHORIZED
+                }
+            }
+    
+            const data = {
+                id: entity.id,
+                name: entity.name,
+                email: entity.email,
+                mobileNo: entity.phoneNumber,
+                password: entity.password 
+            }
+            return this.getTokenData(data);
         }catch(err){
-           this.handleError(err);
+           return this.handleError(err);
         }
-        if(!entity){
-            return {
-                message: "Invalid email",
-                status: StatusCodes.UNAUTHORIZED
-            }
-        }
-
-        const isPasswordMatched = await bcrypt.compare(userData.password, entity.password);
-        if(!isPasswordMatched){
-            return {
-                message: "Invalid password",
-                status: StatusCodes.UNAUTHORIZED
-            }
-        }
-
-        const data = {
-            id: entity.id,
-            name: entity.name,
-            email: entity.email,
-            mobileNo: entity.phoneNumber,
-            password: entity.password 
-        }
-        return this.getTokenData(data);
     }
 
     async updateUser(userData: updateUserData){
@@ -99,7 +98,7 @@ export class UserRepository extends Repository<User>
                 statusCode: StatusCodes.OK
             }
         }catch(err){
-           this.handleError(err);
+           return this.handleError(err);
         }
     }
 
@@ -116,7 +115,7 @@ export class UserRepository extends Repository<User>
                 statusCode: StatusCodes.OK
             }
         }catch(err){
-            this.handleError(err);
+            return this.handleError(err);
         }
     }
 
@@ -132,7 +131,7 @@ export class UserRepository extends Repository<User>
                 statusCode: StatusCodes.OK
             }
         }catch(err){
-            this.handleError(err);
+            return this.handleError(err);
         }
     }
     public async searchUsers(name: string){
@@ -148,7 +147,7 @@ export class UserRepository extends Repository<User>
                 statusCode: StatusCodes.OK
             }
         }catch(err){
-            this.handleError(err);
+            return this.handleError(err);
         }
     }
     public async getUser(userId: string[]){

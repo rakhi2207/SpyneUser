@@ -22,5 +22,5 @@ export const dataSource = new DataSource({
   synchronize: false,
   entities: ['**/entities/*.entity.js'],
   migrations: ['**/migrations/*.js'],
-  migrationsRun: process.env.DB_MIGRATIONS_RUN === 'true' ? true : false,
+  migrationsRun: true,
 });

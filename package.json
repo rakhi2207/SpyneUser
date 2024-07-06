@@ -7,8 +7,9 @@
     "start": "npm run serve",
     "serve": "node dist/index.js",
     "debug": "set NODE_ENV=development && npm run build && npm run start",
-    "build": "tsc",
+    "build": "npx tsc",
     "lint": "eslint . --ext .ts",
+    "postinstall": "npm run build",
     "migration:create": "typeorm migration:create",
     "migration:run": "typeorm-ts-node-commonjs --dataSource ./src/config/db.config.ts migration:run"
   },
