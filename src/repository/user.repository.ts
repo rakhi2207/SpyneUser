@@ -24,18 +24,37 @@ export class UserRepository extends Repository<User>
             statusCode: StatusCodes.BAD_REQUEST
         }
     }
+
+    async validateIsUserExist(userData: user){
+        const data = await this.createQueryBuilder('user')
+        .where(`user.email = '${userData.email}' or user.phoneNumber = '${userData.mobileNo}'`)
+        .getRawMany();
+        return data;
+    }
     async createUser(userData: user){
-        const entity = new User();
-        entity.name = userData.name;
-        entity.email = userData.email;
-        entity.password = await bcrypt.hash(userData.password, 12);
-        entity.created_at = new Date();
-        entity.phoneNumber = userData.mobileNo;
-        let id = '';
         try{
-           const data = await this.save(entity);
-           id = data.id;
-           return this.getTokenData({...userData, id});
+            let id = '';
+            const data = await this.validateIsUserExist(userData);
+            if(data.length){
+                id = data[0].user_id;
+                this.createQueryBuilder('user')
+                .update()
+                .set({
+                    isActive: true
+                })
+                .where(`user.email = '${userData.email}' or user.phoneNumber = '${userData.mobileNo}'`)
+                .execute();
+            } else{
+                const entity = new User();
+                entity.name = userData.name;
+                entity.email = userData.email;
+                entity.password = await bcrypt.hash(userData.password, 12);
+                entity.created_at = new Date();
+                entity.phoneNumber = userData.mobileNo;
+               const data = await this.save(entity);
+               id = data.id;  
+            }
+            return this.getTokenData({...userData, id}); 
         }catch(err){
             return this.handleError(err);
         }
