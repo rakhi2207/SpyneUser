@@ -8,8 +8,8 @@
     "serve": "node dist/index.js",
     "debug": "set NODE_ENV=development && npm run build && npm run start",
     "build": "npx tsc",
-    "lint": "eslint . --ext .ts",
     "postinstall": "npm run build",
+    "lint": "eslint . --ext .ts",
     "migration:create": "typeorm migration:create",
     "migration:run": "typeorm-ts-node-commonjs --dataSource ./src/config/db.config.ts migration:run"
   },
@@ -30,6 +30,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17"
+    "@types/cors": "^2.8.17",
+    "typescript": "^5.5.3"
   }
 }
